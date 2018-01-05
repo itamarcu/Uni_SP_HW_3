@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.9)
-project(Software_Project_3)
+cmake_minimum_required(VERSION 3.8)
+project(C_hw_3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(Software_Project_3
-        main.c
+set(SOURCE_FILES
         makefile
+        main.c
         SPArrayList.c
         SPArrayList.h
         SPArrayListUnitTest.c
@@ -15,12 +15,13 @@ add_executable(Software_Project_3
         SPFIARParser.c
         SPFIARParser.h
         SPFIARParserUnitTest.c
-        SPMainAux.c
-        SPMainAux.h
         SPMinimax.c
         SPMinimax.h
         SPMinimaxNode.c
         SPMinimaxNode.h
-        SPMinimaxNodeUnitTest.c
+        SPMainAux.c
+        SPMainAux.h
         SPMinimaxUnitTest.c
-        unit_test_util.h)
+        SPMinimaxNodeUnitTest.c)
+
+add_executable(C_hw_3 ${SOURCE_FILES})

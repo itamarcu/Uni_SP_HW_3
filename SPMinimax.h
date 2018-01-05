@@ -1,6 +1,7 @@
 #ifndef SPMINIMAX_H_
 #define SPMINIMAX_H_
 
+#include <limits.h>
 #include "SPFIARGame.h"
 #include "SPMinimaxNode.h"
 

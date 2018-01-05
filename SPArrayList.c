@@ -135,7 +135,7 @@ SP_ARRAY_LIST_MESSAGE spArrayListRemoveAt(SPArrayList *src, int index)
     }
     
     //Push elements to the left, in order
-    for (int i = index; i < src->actualSize; i++)
+    for (int i = index; i < src->actualSize - 1; i++)
     {
         src->elements[i] = src->elements[i + 1];
     }

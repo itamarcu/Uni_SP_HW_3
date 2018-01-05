@@ -1,10 +1,8 @@
 #include <stdio.h>
-#include <mem.h>
+#include <string.h>
 #include "SPFIARParser.h"
 #include "SPMainAux.h"
 #include "SPMinimax.h"
-
-#define MAX_PLAYER_SUGGEST_DEPTH 5
 
 CommandResult addDisc(SPFiarGame *game, int columnPlusOne)
 {
@@ -22,15 +20,15 @@ CommandResult addDisc(SPFiarGame *game, int columnPlusOne)
     else //message == SP_FIAR_GAME_SUCCESS
     {
         //print will only happen in computer's turn
-        return CONTINUE;
+        return ADD_DISC;
     }
 }
 
-CommandResult suggestMove(SPFiarGame *game)
+CommandResult suggestMove(SPFiarGame *game, unsigned int player_suggest_depth)
 {
-    int suggestionColumn = spMinimaxSuggestMove(game, MAX_PLAYER_SUGGEST_DEPTH);
+    int suggestionColumn = spMinimaxSuggestMove(game, player_suggest_depth);
     printf("Suggested move: drop a disc to column %d\n", (suggestionColumn + 1));
-    return CONTINUE;
+    return SUGGEST_MOVE;
 }
 
 CommandResult undoMove(SPFiarGame *game)
@@ -53,20 +51,20 @@ CommandResult undoMove(SPFiarGame *game)
     }
     else
     {
-        printf("Remove Disc: remove computer's disc at column %d\n", firstRemoved + 1);
+        printf("Remove disc: remove computer's disc at column %d\n", firstRemoved + 1);
         //Used undo after computer won, so no need for extra undo?
         if (game->currentPlayer == SP_FIAR_GAME_PLAYER_2_SYMBOL) //"else"
         {
             int secondRemoved = spArrayListGetLast(game->historyList);
             spFiarGameUndoPrevMove(game);
-            printf("Remove Disc: remove user's disc at column %d\n", secondRemoved + 1);
+            printf("Remove disc: remove user's disc at column %d\n", secondRemoved + 1);
         }
         
         return UNDO;
     }
 }
 
-CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd)
+CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd, unsigned int player_suggest_depth)
 {
     
     char input[1024 + 1];
@@ -118,7 +116,7 @@ CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd)
             }
             return addDisc(game, cmd.arg);
         case SP_SUGGEST_MOVE:
-            return suggestMove(game);
+            return suggestMove(game, player_suggest_depth);
         case SP_QUIT:
             return QUIT_GAME;
         case SP_RESTART:
@@ -127,5 +125,8 @@ CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd)
             printf("Error: invalid command\n");
             return INVALID_COMMAND;
     }
+    
+    printf("Bug in SPMainAux.makePlayerMove !");
+    return INVALID_COMMAND;
 }
 

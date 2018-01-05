@@ -7,13 +7,14 @@
 
 typedef enum command_result_t
 {
-    CONTINUE,
+    ADD_DISC,
     INVALID_COMMAND,
     QUIT_GAME,
     RESTART_GAME,
-    UNDO
+    UNDO,
+    SUGGEST_MOVE
 } CommandResult;
 
-CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd);
+CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd, unsigned int player_suggest_depth);
 
 #endif

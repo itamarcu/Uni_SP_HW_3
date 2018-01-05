@@ -49,14 +49,7 @@ bool spParserIsInt(const char *str)
  */
 SPCommand spParserGetCmdFromTwoWords(char *command, char *arg)
 {
-    SPCommand *p_cmd;
-    p_cmd = malloc(sizeof(SPCommand));
-    if (p_cmd == NULL)
-    {
-        printf("Error: %s has failed", "spParserGetCmdFromTwoWords");
-        return *p_cmd;
-    }
-    SPCommand cmd = *p_cmd;
+    SPCommand cmd;
     cmd.validArg = false;
     cmd.cmd = SP_INVALID_LINE;
     if (0 == strcmp(command, "suggest_move"))
@@ -90,7 +83,7 @@ SPCommand spParserGetCmdFromTwoWords(char *command, char *arg)
         cmd.cmd = SP_QUIT;
         return cmd;
     }
-    if (0 == strcmp(command, "restart"))
+    if (0 == strcmp(command, "restart_game") || 0 == strcmp(command, "restart"))
     {
         cmd.cmd = SP_RESTART;
         return cmd;
@@ -111,14 +104,7 @@ SPCommand spParserPraseLine(const char *str)
     //returns invalid command if there is a third word in the string command
     if (strtok(NULL, " \r\t\n") != NULL || command == NULL)
     {
-        SPCommand *p_cmd;
-        p_cmd = malloc(sizeof(SPCommand));
-        if (p_cmd == NULL)
-        {
-            printf("Error: %s has failed", "spParserPraseLine");
-            return *p_cmd;
-        }
-        SPCommand cmd = *p_cmd;
+        SPCommand cmd;
         cmd.cmd = SP_INVALID_LINE;
         cmd.validArg = false;
         cmd.arg = -1;

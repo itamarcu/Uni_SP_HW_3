@@ -43,23 +43,25 @@ prompt_difficulty:
             printf("Error: invalid level (should be between 1 to 7)\n");
             goto prompt_difficulty;
         }
-        
+    
+        unsigned int player_suggest_depth = difficulty;
+    
         bool gameEnd = false;
+        bool printBoard = true;
         
         while (true)
         {
             if (gameEnd || game->currentPlayer == SP_FIAR_GAME_PLAYER_1_SYMBOL)
             {
-                if (!gameEnd)
+                if (printBoard)
                 {
                     spFiarGamePrintBoard(game);
                     printf("Please make the next move:\n");
                 }
 prompt_command:; //a label can only be part of a statement and a declaration is not a statement
-                CommandResult result = makePlayerMove(game, gameEnd);
+                CommandResult result = makePlayerMove(game, gameEnd, player_suggest_depth);
                 if (result == QUIT_GAME)
                 {
-                    printf("Exiting...\n");
                     goto program_end;
                 }
                 else if (result == INVALID_COMMAND)
@@ -75,8 +77,16 @@ prompt_command:; //a label can only be part of a statement and a declaration is 
                 else if (result == UNDO)
                 {
                     gameEnd = false;
+                    printBoard = true;
                 }
-                //else, continue loop as usual
+                else if (result == SUGGEST_MOVE)
+                {
+                    printBoard = false;
+                }
+                else
+                {
+                    printBoard = true;
+                }
             }
             else
             {
@@ -106,10 +116,12 @@ prompt_command:; //a label can only be part of a statement and a declaration is 
                 printf("Please enter 'quit' to exit or 'restart' to start a new game!\n");
                 
                 gameEnd = true;
+                printBoard = false;
             }
         }
     }
 
 program_end:
+    printf("Exiting...\n");
     spFiarGameDestroy(game);
 }
