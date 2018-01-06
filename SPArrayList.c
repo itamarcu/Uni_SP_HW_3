@@ -107,7 +107,6 @@ SP_ARRAY_LIST_MESSAGE spArrayListAddAt(SPArrayList *src, int elem, int index)
     return SP_ARRAY_LIST_SUCCESS;
 }
 
-
 SP_ARRAY_LIST_MESSAGE spArrayListAddFirst(SPArrayList *src, int elem)
 {
     return spArrayListAddAt(src, elem, 0);

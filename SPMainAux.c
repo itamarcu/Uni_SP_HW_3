@@ -4,6 +4,12 @@
 #include "SPMainAux.h"
 #include "SPMinimax.h"
 
+/**
+ * Add Disc action.
+ * @param game the game
+ * @param columnPlusOne column to insert, 1-based
+ * @return INVALID_COMMAND if invalid, otherwise ADD_DISC
+ */
 CommandResult addDisc(SPFiarGame *game, int columnPlusOne)
 {
     SP_FIAR_GAME_MESSAGE message = spFiarGameSetMove(game, columnPlusOne - 1);
@@ -24,6 +30,12 @@ CommandResult addDisc(SPFiarGame *game, int columnPlusOne)
     }
 }
 
+/**
+ * Suggest move action. Will print the result.
+ * @param game the game
+ * @param player_suggest_depth depth for the minmax algorithm
+ * @return SUGGEST_MOVE
+ */
 CommandResult suggestMove(SPFiarGame *game, unsigned int player_suggest_depth)
 {
     int suggestionColumn = spMinimaxSuggestMove(game, player_suggest_depth);
@@ -31,6 +43,11 @@ CommandResult suggestMove(SPFiarGame *game, unsigned int player_suggest_depth)
     return SUGGEST_MOVE;
 }
 
+/**
+ * Undo move action.
+ * @param game the game
+ * @return INVALID_COMMAND if invalid / empty, otherwise UNDO
+ */
 CommandResult undoMove(SPFiarGame *game)
 {
     int firstRemoved = 12345;
@@ -64,6 +81,13 @@ CommandResult undoMove(SPFiarGame *game)
     }
 }
 
+/**
+ * Takes a string input from stdin, parses it and acts on the game depending on it.
+ * @param game the game
+ * @param gameEnd true if the game has ended (and only undo/restart/quit are possible)
+ * @param player_suggest_depth the depth to which the suggest_move action will go
+ * @return result of the player command (as enum constant) - either the type of the command, or the INVALID_COMMAND constant
+ */
 CommandResult makePlayerMove(SPFiarGame *game, bool gameEnd, unsigned int player_suggest_depth)
 {
     

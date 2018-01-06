@@ -3,6 +3,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/**
+ * @param ch character on the board - should be one of the following:
+ * SP_FIAR_GAME_PLAYER_1_SYMBOL
+ * SP_FIAR_GAME_PLAYER_1_SYMBOL
+ * SP_FIAR_GAME_EMPTY_ENTRY
+ * @return +1 if player 1, -1 if player 2, 0 if empty entry
+ */
 int calc(char ch)
 {
     if (ch == SP_FIAR_GAME_PLAYER_1_SYMBOL)
@@ -16,13 +23,16 @@ int calc(char ch)
     return 0;
 }
 
-int calculateScore(SPFiarGame *src)
+/**
+ * @param board board of the game (2D array of characters)
+ * @param weights score weights, for scores [-3, -2, -1, 0, 1, 2, 3].
+ * Scores 4 and -4 will immediately return INT_MAX or INT_MIN.
+ * @return sum of scores of horizontal quadruplets
+ */
+int calculateScoreHorizontals(char (*board)[SP_FIAR_GAME_N_COLUMNS], const int weights[7])
 {
-    int weights[7] = {-5, -2, -1, 0, +1, +2, +5};
-    char (*board)[SP_FIAR_GAME_N_COLUMNS] = src->gameBoard;
     int totalScore = 0;
     
-    //Horizontals
     for (int row = 0; row < SP_FIAR_GAME_N_ROWS; row++)
     {
         for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS - 4 + 1; col++)
@@ -52,7 +62,19 @@ int calculateScore(SPFiarGame *src)
         }
     }
     
-    //Verticals
+    return totalScore;
+}
+
+/**
+ * @param board board of the game (2D array of characters)
+ * @param weights score weights, for scores [-3, -2, -1, 0, 1, 2, 3].
+ * Scores 4 and -4 will immediately return INT_MAX or INT_MIN.
+ * @return sum of scores of vertical quadruplets
+ */
+int calculateScoreVerticals(char (*board)[SP_FIAR_GAME_N_COLUMNS], const int weights[7])
+{
+    int totalScore = 0;
+    
     for (int row = 0; row < SP_FIAR_GAME_N_ROWS - 4 + 1; row++)
     {
         for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS; col++)
@@ -82,7 +104,19 @@ int calculateScore(SPFiarGame *src)
         }
     }
     
-    //Diagonals
+    return totalScore;
+}
+
+/**
+ * @param board board of the game (2D array of characters)
+ * @param weights score weights, for scores [-3, -2, -1, 0, 1, 2, 3].
+ * Scores 4 and -4 will immediately return INT_MAX or INT_MIN.
+ * @return sum of scores of diagonal quadruplets, in both directions
+ */
+int calculateScoreDiagonals(char (*board)[SP_FIAR_GAME_N_COLUMNS], const int weights[7])
+{
+    int totalScore = 0;
+    
     for (int row = 0; row < SP_FIAR_GAME_N_ROWS - 4 + 1; row++)
     {
         for (int col = 0; col < SP_FIAR_GAME_N_COLUMNS - 4 + 1; col++)
@@ -125,6 +159,45 @@ int calculateScore(SPFiarGame *src)
             totalScore += weights[lineScoreUL + 4 - 1];
         }
     }
+    
+    return totalScore;
+}
+
+/**
+ * @param src
+ * @return complete score for a game's board, weighted appropriately.
+ * Will return INT_MAX or INT_MIN if a player wins.
+ */
+int calculateScore(SPFiarGame *src)
+{
+    int weights[7] = {-5, -2, -1, 0, +1, +2, +5};
+    char (*board)[SP_FIAR_GAME_N_COLUMNS] = src->gameBoard;
+    int totalScore = 0;
+    
+    //Horizontals
+    int horiScore = calculateScoreHorizontals(board, weights);
+    if (horiScore == INT_MAX || horiScore == INT_MIN)
+    {
+        return horiScore;
+    }
+    totalScore += horiScore;
+    
+    //Verticals
+    int vertScore = calculateScoreVerticals(board, weights);
+    if (vertScore == INT_MAX || vertScore == INT_MIN)
+    {
+        return vertScore;
+    }
+    totalScore += vertScore;
+    
+    //Diagonals
+    int diagScore = calculateScoreDiagonals(board, weights);
+    if (diagScore == INT_MAX || diagScore == INT_MIN)
+    {
+        return diagScore;
+    }
+    totalScore += diagScore;
+    
     
     return totalScore;
 }
